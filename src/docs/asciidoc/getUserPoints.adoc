@@ -1,0 +1,37 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+:site-url: /build/asciidoc/html5/
+
+= [API] getUserPoints
+
+== Request
+=== [Request URL]
+....
+GET /points/user/{userId}
+Content-Type: application/json;charset=UTF-8
+....
+
+=== [Request CURL]
+include::{snippets}/getUserPoints/curl-request.adoc[]
+
+
+=== [Request Path Parameters]
+include::{snippets}/getUserPoints/path-parameters.adoc[]
+
+=== [Request HTTP Example]
+include::{snippets}/getUserPoints/http-request.adoc[]
+
+
+== Response
+=== [Response Fields]
+include::{snippets}/getUserPoints/response-fields.adoc[]
+
+=== [Response HTTP Example]
+include::{snippets}/getUserPoints/http-response.adoc[]

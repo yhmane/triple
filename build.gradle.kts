@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
 	id("org.springframework.boot") version "2.7.1"
 	id("io.spring.dependency-management") version "1.0.11.RELEASE"
-	id("org.asciidoctor.convert") version "1.5.8"
+	id("org.asciidoctor.jvm.convert") version "3.3.2"
 	kotlin("jvm") version "1.6.21"
 	kotlin("plugin.spring") version "1.6.21"
 }
@@ -16,8 +16,14 @@ repositories {
 	mavenCentral()
 }
 
-extra["snippetsDir"] = file("build/generated-snippets")
-extra["testcontainersVersion"] = "1.17.3"
+
+val asciidoctorExtensions: Configuration by configurations.creating
+
+configurations {
+	compileOnly {
+		extendsFrom(configurations.annotationProcessor.get())
+	}
+}
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -26,14 +32,10 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
-	testImplementation("org.testcontainers:junit-jupiter")
-}
-
-dependencyManagement {
-	imports {
-		mavenBom("org.testcontainers:testcontainers-bom:${property("testcontainersVersion")}")
-	}
+	testImplementation("io.mockk:mockk:1.12.4")
+	testImplementation("com.ninja-squad:springmockk:3.1.1")
+	testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc:2.0.5.RELEASE")
+	asciidoctorExtensions("org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.5.RELEASE")
 }
 
 tasks.withType<KotlinCompile> {
@@ -45,4 +47,31 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+/**
+ * asciidoc
+ */
+tasks.asciidoctor {
+	configurations(asciidoctorExtensions.name)
+	baseDirFollowsSourceDir()
+	dependsOn(tasks.test)
+
+	doLast {
+		copy {
+			from(outputDir)
+			into("src/main/resources/static/docs")
+		}
+	}
+}
+
+tasks.test {
+}
+
+tasks.build {
+	dependsOn(tasks.asciidoctor)
+}
+
+tasks.bootJar {
+	dependsOn(tasks.asciidoctor)
 }

@@ -1,0 +1,27 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+= API Document
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 3
+:sectlinks:
+:docinfo: shared-head
+
+[[introduction]]
+== member-api
+Triple의 member api를 제공합니다 (point, review)
+
+|===
+| 환경 |
+
+| [local]
+| http://localhost:8080
+
+|===
+
+include::getUserPoints.adoc[]
+
+include::executePointEvent.adoc[]

@@ -1,0 +1,34 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+:site-url: /build/asciidoc/html5/
+
+= [API] executePointEvent
+
+== Request
+=== [Request URL]
+....
+POST /events/
+Content-Type: application/json;charset=UTF-8
+....
+
+=== [Request CURL]
+include::{snippets}/executePointEvent/curl-request.adoc[]
+
+
+=== [Request field Parameters]
+include::{snippets}/executePointEvent/request-fields.adoc[]
+
+=== [Request HTTP Example]
+include::{snippets}/executePointEvent/http-request.adoc[]
+
+
+== Response
+=== [Response HTTP Example]
+include::{snippets}/executePointEvent/http-response.adoc[]
