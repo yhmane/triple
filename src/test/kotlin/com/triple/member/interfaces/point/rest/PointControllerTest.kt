@@ -3,6 +3,7 @@ package com.triple.member.interfaces.point.rest
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.ninjasquad.springmockk.MockkBean
 import com.triple.member.application.point.PointService
+import com.triple.member.domain.point.exception.PointUserNotFoundException
 import com.triple.member.interfaces.point.param.PointOfHttpRequest
 import com.triple.member.interfaces.point.param.PointOfHttpResponse
 import com.triple.member.interfaces.point.restdocs.PointExecuteEventRestDocs
@@ -19,6 +20,7 @@ import org.springframework.restdocs.RestDocumentationExtension
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultActions
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
@@ -54,6 +56,22 @@ class PointControllerTest {
             .andExpect(jsonPath("$.userId").value(expectedResponse.userId))
             .andExpect(jsonPath("$.points").value(expectedResponse.points))
             .andDo(PointGetUserPointsRestDocs.restDocument())
+    }
+
+    @Test
+    fun `GET user-point 404 not-found`() {
+        // Given
+        val givenUserId = "3ede0ef2-92b7-4817-a5f3-0c575322"
+        every { pointService.getUserPoints(givenUserId) } throws PointUserNotFoundException(givenUserId)
+
+        // When
+        val endPoint = "/points/users/{userId}"
+        val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get(endPoint, givenUserId))
+            .andDo(MockMvcResultHandlers.print())
+
+        // Then
+        resultActions.andExpect(MockMvcResultMatchers.status().is4xxClientError)
+            .andDo(MockMvcResultHandlers.print())
     }
 
     @Test
