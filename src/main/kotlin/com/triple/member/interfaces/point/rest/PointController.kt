@@ -6,6 +6,7 @@ import com.triple.member.interfaces.point.param.PointOfHttpResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import javax.validation.Valid
 
 @RestController
 class PointController(
@@ -18,7 +19,7 @@ class PointController(
     }
 
     @PostMapping("/events")
-    fun executePointEvent(@RequestBody pointOfHttpRequest: PointOfHttpRequest): ResponseEntity<Any> {
+    fun executePointEvent(@RequestBody @Valid pointOfHttpRequest: PointOfHttpRequest): ResponseEntity<Any> {
         return ResponseEntity(pointService.executePointEvent(pointOfHttpRequest), HttpStatus.OK)
     }
 }

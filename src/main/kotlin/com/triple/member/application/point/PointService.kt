@@ -1,11 +1,12 @@
 package com.triple.member.application.point
 
 import com.triple.member.domain.point.command.PointCommander
+import com.triple.member.domain.point.enums.PointActionType
 import com.triple.member.interfaces.point.param.PointOfHttpRequest
 import com.triple.member.interfaces.point.param.PointOfHttpResponse
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
 
-@Component
+@Service
 class PointService(
     private val pointCommander: PointCommander
 ) {
@@ -16,6 +17,10 @@ class PointService(
     }
 
     fun executePointEvent(pointOfHttpRequest: PointOfHttpRequest) {
-        // TODO 포인트 이벤트 처리 business 개발
+        when (pointOfHttpRequest.pointActionType) {
+            PointActionType.ADD -> pointCommander.addPoint(pointOfHttpRequest)
+            PointActionType.MOD -> pointCommander.updatePoint(pointOfHttpRequest)
+            PointActionType.DELETE -> pointCommander.deletePoint(pointOfHttpRequest)
+        }
     }
 }

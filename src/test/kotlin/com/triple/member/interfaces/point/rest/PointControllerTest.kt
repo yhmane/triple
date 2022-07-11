@@ -101,4 +101,35 @@ class PointControllerTest {
         // Then
         resultActions.andExpect(MockMvcResultMatchers.status().isOk)
     }
+
+    @Test
+    fun `POST events 400 BadRequest`() {
+        // Given
+        val givenPointOfHttpRequest = PointOfHttpRequest(
+            type = "REVIEW1",
+            action = "ADD22",
+            reviewId = "",
+            content = "",
+            attachedPhotoIds = null,
+            userId = "",
+            placeId = "",
+        )
+
+        // When
+        val endPoint = "/events"
+        val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.post(endPoint)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(ObjectMapper().writeValueAsString(givenPointOfHttpRequest))
+        )
+            .andDo(MockMvcResultHandlers.print())
+
+        // Then
+        resultActions.andExpect(MockMvcResultMatchers.status().is4xxClientError)
+            .andExpect(jsonPath("$.userId").value("field: userId, message: userId를 입력해주세요"))
+            .andExpect(jsonPath("$.placeId").value("field: placeId, message: placeId를 입력해주세요"))
+            .andExpect(jsonPath("$.action").value("field: action, message: add | mod | delete 만 올 수 있습니다"))
+            .andExpect(jsonPath("$.type").value("field: type, message: review 만 올 수 있습니다"))
+            .andExpect(jsonPath("$.reviewId").value("field: reviewId, message: reviewId를 입력해주세요"))
+            .andExpect(jsonPath("$.content").value("field: content, message: 1자 이상의 리뷰를 남겨주세요"))
+    }
 }
