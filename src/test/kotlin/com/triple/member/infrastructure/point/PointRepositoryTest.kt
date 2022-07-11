@@ -19,13 +19,13 @@ class PointRepositoryTest {
     fun test() {
         // Given
         val givenPointId = 1L
-        val givenUserId = "triple_user_1"
+        val givenUserId = "3ede0ef2-92b7-4817-a5f3-0c575361f745"
         val givenPoints = 3L
         val givenCreatedAt = LocalDateTime.now().minusHours(1L)
         val givenUpdatedAt = LocalDateTime.now().minusHours(1L)
 
         // When
-        val pointEntity = pointRepository.findByUserId("triple_user_1")
+        val pointEntity = pointRepository.findByUserId("3ede0ef2-92b7-4817-a5f3-0c575361f745")
             .get()
 
         // Then

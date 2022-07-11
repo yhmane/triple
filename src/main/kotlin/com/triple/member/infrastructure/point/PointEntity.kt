@@ -2,7 +2,6 @@ package com.triple.member.infrastructure.point
 
 import com.triple.member.domain.point.vo.PointUserVO
 import com.triple.member.infrastructure.BaseTimeEntity
-import org.hibernate.annotations.ColumnDefault
 import javax.persistence.*
 
 @Table(name = "point")
@@ -11,12 +10,13 @@ class PointEntity(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val pointId: Long,
+    val pointId: Long? = null,
 
+    @Column(name = "user_id")
     val userId: String,
 
-    @ColumnDefault("0")
-    var points: Long,
+    @Column(name = "points")
+    var points: Long = 0,
 ) : BaseTimeEntity() {
 
     fun convertToPointUserVO() = PointUserVO(

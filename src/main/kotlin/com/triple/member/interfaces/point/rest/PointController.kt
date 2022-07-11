@@ -1,5 +1,6 @@
 package com.triple.member.interfaces.point.rest
 
+import com.triple.member.application.aggregate.PointReviewAggregate
 import com.triple.member.application.point.PointService
 import com.triple.member.interfaces.point.param.PointOfHttpRequest
 import com.triple.member.interfaces.point.param.PointOfHttpResponse
@@ -10,7 +11,8 @@ import javax.validation.Valid
 
 @RestController
 class PointController(
-    private val pointService: PointService
+    private val pointService: PointService,
+    private val pointReviewAggregate: PointReviewAggregate,
 ) {
 
     @GetMapping("/points/users/{userId}")
@@ -20,6 +22,6 @@ class PointController(
 
     @PostMapping("/events")
     fun executePointEvent(@RequestBody @Valid pointOfHttpRequest: PointOfHttpRequest): ResponseEntity<Any> {
-        return ResponseEntity(pointService.executePointEvent(pointOfHttpRequest), HttpStatus.OK)
+        return ResponseEntity(pointReviewAggregate.executePointEvent(pointOfHttpRequest), HttpStatus.OK)
     }
 }

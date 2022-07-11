@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.triple.member.common.validation.EnumValidatorOfHttpRequest
 import com.triple.member.domain.point.enums.PointActionType
 import com.triple.member.domain.point.enums.PointType
+import com.triple.member.domain.review.Review
 import javax.validation.constraints.NotBlank
 
 data class PointOfHttpRequest(
@@ -26,7 +27,7 @@ data class PointOfHttpRequest(
     @field:NotBlank(message = "1자 이상의 리뷰를 남겨주세요")
     val content: String,
 
-    val attachedPhotoIds: List<String>? = null,
+    val attachedPhotoIds: MutableList<String>? = null,
 
     @field:NotBlank(message = "userId를 입력해주세요")
     val userId: String,
@@ -39,4 +40,13 @@ data class PointOfHttpRequest(
     val pointActionType: PointActionType? by lazy {
         PointActionType.getPointActionType(action)
     }
+
+    fun convertToReview() = Review(
+        reviewId = reviewId,
+        userId = userId,
+        content = content,
+        placeId = placeId,
+        attachedPhotoIds = attachedPhotoIds ?: mutableListOf(),
+        pointActionType = pointActionType!!
+    )
 }

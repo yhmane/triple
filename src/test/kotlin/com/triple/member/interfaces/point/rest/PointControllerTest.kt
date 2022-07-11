@@ -2,8 +2,11 @@ package com.triple.member.interfaces.point.rest
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.ninjasquad.springmockk.MockkBean
+import com.triple.member.application.aggregate.PointReviewAggregate
 import com.triple.member.application.point.PointService
 import com.triple.member.domain.point.exception.PointUserNotFoundException
+import com.triple.member.domain.review.exception.AlreadyRegisteredReviewException
+import com.triple.member.domain.review.exception.NotRegisteredReviewException
 import com.triple.member.interfaces.point.param.PointOfHttpRequest
 import com.triple.member.interfaces.point.param.PointOfHttpResponse
 import com.triple.member.interfaces.point.restdocs.PointExecuteEventRestDocs
@@ -35,6 +38,9 @@ class PointControllerTest {
 
     @MockkBean
     private lateinit var pointService: PointService
+
+    @MockkBean
+    private lateinit var pointReviewAggregate: PointReviewAggregate
 
     @Test
     fun `GET user-point 200 OK`() {
@@ -82,12 +88,12 @@ class PointControllerTest {
             action = "ADD",
             reviewId = "240a0658-dc5f-4878-9381-ebb7b2667772",
             content = "!",
-            attachedPhotoIds = listOf("e4d1a64e-a531-46de-88d0-ff0ed70c0bb8", "afb0cef2-851d-4a50-bb07-9cc15cbdc332"),
+            attachedPhotoIds = mutableListOf("e4d1a64e-a531-46de-88d0-ff0ed70c0bb8", "afb0cef2-851d-4a50-bb07-9cc15cbdc332"),
             userId = "3ede0ef2-92b7-4817-a5f3-0c575361f745",
             placeId = "2e4baf1c-5acb-4efb-a1af-eddada31b00f",
         )
 
-        every { pointService.executePointEvent(givenPointOfHttpRequest) } returns mockk()
+        every { pointReviewAggregate.executePointEvent(givenPointOfHttpRequest) } returns mockk()
 
         // When
         val endPoint = "/events"
@@ -131,5 +137,63 @@ class PointControllerTest {
             .andExpect(jsonPath("$.type").value("field: type, message: review 만 올 수 있습니다"))
             .andExpect(jsonPath("$.reviewId").value("field: reviewId, message: reviewId를 입력해주세요"))
             .andExpect(jsonPath("$.content").value("field: content, message: 1자 이상의 리뷰를 남겨주세요"))
+    }
+
+    @Test
+    fun `POST events add 409 NotRegisteredReviewException`() {
+        // Given
+        val givenPointOfHttpRequest = PointOfHttpRequest(
+            type = "REVIEW",
+            action = "ADD",
+            reviewId = "240a0658-dc5f-4878-9381-ebb7b2667772",
+            content = "!",
+            attachedPhotoIds = mutableListOf("e4d1a64e-a531-46de-88d0-ff0ed70c0bb8", "afb0cef2-851d-4a50-bb07-9cc15cbdc332"),
+            userId = "3ede0ef2-92b7-4817-a5f3-0c575361f745",
+            placeId = "2e4baf1c-5acb-4efb-a1af-eddada31b00f",
+        )
+        val givenReviewId = givenPointOfHttpRequest.reviewId
+        every { pointReviewAggregate.executePointEvent(givenPointOfHttpRequest) } throws NotRegisteredReviewException(givenReviewId)
+
+        // When
+        val endPoint = "/events"
+        val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.post(endPoint)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(ObjectMapper().writeValueAsString(givenPointOfHttpRequest))
+        )
+            .andDo(MockMvcResultHandlers.print())
+
+
+        // Then
+        resultActions.andExpect(MockMvcResultMatchers.status().is4xxClientError)
+            .andDo(MockMvcResultHandlers.print())
+    }
+
+    @Test
+    fun `POST events update 409 AlreadyRegisteredReviewException`() {
+        // Given
+        val givenPointOfHttpRequest = PointOfHttpRequest(
+            type = "REVIEW",
+            action = "ADD",
+            reviewId = "240a0658-dc5f-4878-9381-ebb7b2667772",
+            content = "!",
+            attachedPhotoIds = mutableListOf("e4d1a64e-a531-46de-88d0-ff0ed70c0bb8", "afb0cef2-851d-4a50-bb07-9cc15cbdc332"),
+            userId = "3ede0ef2-92b7-4817-a5f3-0c575361f745",
+            placeId = "2e4baf1c-5acb-4efb-a1af-eddada31b00f",
+        )
+        val givenReviewId = givenPointOfHttpRequest.reviewId
+        every { pointReviewAggregate.executePointEvent(givenPointOfHttpRequest) } throws AlreadyRegisteredReviewException(givenReviewId)
+
+        // When
+        val endPoint = "/events"
+        val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.post(endPoint)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(ObjectMapper().writeValueAsString(givenPointOfHttpRequest))
+        )
+            .andDo(MockMvcResultHandlers.print())
+
+
+        // Then
+        resultActions.andExpect(MockMvcResultMatchers.status().is4xxClientError)
+            .andDo(MockMvcResultHandlers.print())
     }
 }

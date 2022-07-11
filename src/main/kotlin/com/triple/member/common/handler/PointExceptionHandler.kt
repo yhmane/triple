@@ -1,6 +1,8 @@
 package com.triple.member.common.handler
 
+import com.triple.member.domain.review.exception.AlreadyRegisteredReviewException
 import com.triple.member.domain.point.exception.PointUserNotFoundException
+import com.triple.member.domain.review.exception.NotRegisteredReviewException
 import com.triple.member.interfaces.point.param.PointOfErrorResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -17,6 +19,16 @@ class PointExceptionHandler {
 
     @ExceptionHandler(PointUserNotFoundException::class)
     fun handlePointUserNotFoundException(e: PointUserNotFoundException): ResponseEntity<PointOfErrorResponse> =
+        ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body(PointOfErrorResponse(e.message))
+
+    @ExceptionHandler(AlreadyRegisteredReviewException::class)
+    fun handleAlreadyRegisteredReviewException(e: AlreadyRegisteredReviewException): ResponseEntity<PointOfErrorResponse> =
+        ResponseEntity.status(HttpStatus.CONFLICT)
+            .body(PointOfErrorResponse(e.message))
+
+    @ExceptionHandler(NotRegisteredReviewException::class)
+    fun handleNotRegisteredReviewException(e: NotRegisteredReviewException): ResponseEntity<PointOfErrorResponse> =
         ResponseEntity.status(HttpStatus.NOT_FOUND)
             .body(PointOfErrorResponse(e.message))
 
