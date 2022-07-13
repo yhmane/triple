@@ -1,3 +1,4 @@
+## table
 ```sql
 create table point (
     point_id bigint not null auto_increment,
@@ -37,4 +38,13 @@ create table review_photo (
     updated_at datetime(6) not null, 
     primary key (attached_photo_id)
 ) engine=InnoDB;
+
+alter table review_photo add constraint FK80ti8nek4uv8vn4vjhpre6mwg foreign key (review_id) references review (review_id)
+```
+
+## index
+```sql
+alter table point add constraint point_index_1 unique (user_id);
+create index point_history_index_1 on point_history (review_id, point_type);
+create index review_index_1 on review (place_id, created_at);
 ```

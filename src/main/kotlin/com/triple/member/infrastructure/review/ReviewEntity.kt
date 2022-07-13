@@ -6,8 +6,13 @@ import java.util.stream.Collectors
 import javax.persistence.*
 import kotlin.streams.toList
 
-@Table(name = "review")
 @Entity
+@Table(
+    name = "review",
+    indexes = [
+        Index(name = "review_index_1", columnList = "place_id, created_at"),
+    ]
+)
 class ReviewEntity(
 
     @Id

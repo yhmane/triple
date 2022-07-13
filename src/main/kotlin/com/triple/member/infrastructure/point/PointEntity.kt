@@ -4,8 +4,13 @@ import com.triple.member.domain.point.vo.PointUserVO
 import com.triple.member.infrastructure.BaseTimeEntity
 import javax.persistence.*
 
-@Table(name = "point")
 @Entity
+@Table(
+    name = "point",
+    indexes = [
+        Index(name = "point_index_1", columnList = "user_id", unique = true),
+    ]
+)
 class PointEntity(
 
     @Id
