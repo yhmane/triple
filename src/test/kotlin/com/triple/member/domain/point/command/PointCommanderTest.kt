@@ -221,7 +221,6 @@ class PointCommanderTest {
             pointActionType = PointActionType.DELETE,
         )
         val givenUserId = givenReview.userId
-        val givenFirstReview = true
         val givenPointEntity = Optional.of(PointEntity(userId = givenReview.userId))
         val givenPointHistoryEntity = listOf(
             PointHistoryEntity(
@@ -238,7 +237,7 @@ class PointCommanderTest {
 
 
         // When, Then
-        pointCommander.minusPoint(givenReview, givenFirstReview)
+        pointCommander.minusPoint(givenReview)
     }
 
     @Test
@@ -253,7 +252,6 @@ class PointCommanderTest {
             pointActionType = PointActionType.DELETE,
         )
         val givenUserId = givenReview.userId
-        val givenFirstReview = true
         val givenPointEntity = Optional.of(PointEntity(userId = givenReview.userId))
         val givenPointHistoryEntity = listOf(
             PointHistoryEntity(
@@ -270,7 +268,7 @@ class PointCommanderTest {
 
 
         // When, Then
-        pointCommander.minusPoint(givenReview, givenFirstReview)
+        pointCommander.minusPoint(givenReview)
     }
 
     @Test
@@ -285,7 +283,6 @@ class PointCommanderTest {
             pointActionType = PointActionType.DELETE,
         )
         val givenUserId = givenReview.userId
-        val givenFirstReview = true
         val givenPointEntity = Optional.of(PointEntity(userId = givenReview.userId))
         val givenPointHistoryEntity = listOf(
             PointHistoryEntity(
@@ -302,7 +299,7 @@ class PointCommanderTest {
 
 
         // When, Then
-        pointCommander.minusPoint(givenReview, givenFirstReview)
+        pointCommander.minusPoint(givenReview)
     }
 
     @Test
@@ -317,12 +314,11 @@ class PointCommanderTest {
             pointActionType = PointActionType.DELETE,
         )
         val givenUserId = givenReview.userId
-        val givenFirstReview = true
         every { pointRepository.findByUserId(givenUserId) } returns Optional.empty()
 
 
         // When
-        val exception = assertThrows(PointUserNotFoundException::class.java) {pointCommander.minusPoint(givenReview, givenFirstReview) }
+        val exception = assertThrows(PointUserNotFoundException::class.java) {pointCommander.minusPoint(givenReview) }
 
         // Then
         assertThat("userId 를 찾을 수 없습니다, userId: $givenUserId").isEqualTo(exception.message)

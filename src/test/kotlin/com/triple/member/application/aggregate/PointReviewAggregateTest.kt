@@ -133,10 +133,8 @@ class PointReviewAggregateTest {
             placeId = "2e4baf1c-5acb-4efb-a1af-eddada31b00f"
         )
         val givenReview = givenPointOfHttpRequest.convertToReview()
-        val givenFirstReview = true
         every { reviewCommander.deleteReview(givenReview) } returns mockk()
-        every { reviewCommander.checkFirstReview(givenReview) } returns givenFirstReview
-        every { pointCommander.minusPoint(givenReview, givenFirstReview) } returns mockk()
+        every { pointCommander.minusPoint(givenReview) } returns mockk()
 
         // When, Then
         pointReviewAggregate.executePointEvent(givenPointOfHttpRequest)

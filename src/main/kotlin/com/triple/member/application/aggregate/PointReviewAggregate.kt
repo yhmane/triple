@@ -41,8 +41,6 @@ class PointReviewAggregate(
     private fun deleteReview(pointOfHttpRequest: PointOfHttpRequest) {
         val review = pointOfHttpRequest.convertToReview()
         reviewCommander.deleteReview(review)
-        val firstReview = reviewCommander.checkFirstReview(review)
-
-        pointCommander.minusPoint(review, firstReview)
+        pointCommander.minusPoint(review)
     }
 }

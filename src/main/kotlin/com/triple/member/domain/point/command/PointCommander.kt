@@ -72,7 +72,7 @@ class PointCommander(
         }
     }
 
-    fun minusPoint(review: Review, firstReview: Boolean) {
+    fun minusPoint(review: Review) {
         val pointEntity = pointRepository.findByUserId(review.userId)
             .orElseThrow { throw PointUserNotFoundException(review.userId) }
 

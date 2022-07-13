@@ -99,8 +99,10 @@ class ReviewCommander(
 
     fun checkFirstReview(review: Review): Boolean {
         val reviewEntity = reviewRepository.findTop1ByPlaceIdOrderByCreatedAtAsc(review.placeId)
-            .first()
 
-        return review.userId == reviewEntity.userId
+        if (reviewEntity.isEmpty())
+            return false
+
+        return reviewEntity.first().userId == review.userId
     }
 }
