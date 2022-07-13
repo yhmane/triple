@@ -77,7 +77,7 @@ tasks.asciidoctor {
 	doLast {
 		copy {
 			from(outputDir)
-			into("src/main/resources/static/docs")
+			into("$buildDir/resources/static/docs")
 		}
 	}
 }
